@@ -30,7 +30,7 @@ const getProducts = async (): Promise<CartItemType[]> =>
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState<boolean>(false);
-  const [cartItems, setCartItems] = useState([] as CartItemType[]);
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
 
   const { data, isLoading, error } = useQuery<CartItemType[]>(
     "products",
