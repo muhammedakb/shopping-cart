@@ -26,7 +26,11 @@ const Cart: FC<Props> = ({ cartItems, addToCart, removeFromCart }) => {
           removeFromCart={removeFromCart}
         />
       ))}
-      <h2>Total: ₺{calculateTotal(cartItems).toFixed(2)}</h2>
+      {cartItems.length > 0 && (
+        <h2>
+          Total: ₺{calculateTotal(cartItems).toFixed(2).replace(".", ",")}
+        </h2>
+      )}
     </Wrapper>
   );
 };

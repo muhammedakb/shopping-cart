@@ -5,6 +5,10 @@ import { CartItemType } from "../App";
 // Styles
 import { Wrapper } from "./CartItem.styles";
 
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import RemoveIcon from "@material-ui/icons/Remove";
+import AddIcon from "@material-ui/icons/Add";
+
 type Props = {
   item: CartItemType;
   addToCart: (clickedItem: CartItemType) => void;
@@ -17,8 +21,10 @@ const CartItem: FC<Props> = ({ item, addToCart, removeFromCart }) => {
       <div>
         <h3>{item.title}</h3>
         <div className="information">
-          <p>Price: ₺{item.price.toFixed(2)}</p>
-          <p>Total: ₺{(item.amount * item.price).toFixed(2)}</p>
+          <p>Price: ₺{item.price.toFixed(2).replace(".", ",")}</p>
+          <p>
+            Total: ₺{(item.amount * item.price).toFixed(2).replace(".", ",")}
+          </p>
         </div>
         <div className="buttons">
           <Button
@@ -27,7 +33,11 @@ const CartItem: FC<Props> = ({ item, addToCart, removeFromCart }) => {
             variant="contained"
             onClick={() => removeFromCart(item.id)}
           >
-            -
+            {item.amount > 1 ? (
+              <RemoveIcon />
+            ) : (
+              <DeleteOutlineIcon htmlColor="#dc2626" />
+            )}
           </Button>
           <p>{item.amount}</p>
           <Button
@@ -36,7 +46,7 @@ const CartItem: FC<Props> = ({ item, addToCart, removeFromCart }) => {
             variant="contained"
             onClick={() => addToCart(item)}
           >
-            +
+            <AddIcon />
           </Button>
         </div>
       </div>

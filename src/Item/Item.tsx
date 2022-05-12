@@ -45,7 +45,7 @@ const Item: FC<Props> = ({ item, handleAddToCart }) => {
           {item.rating.rate} ({item.rating.count})
         </span>
       </div>
-      <p className="rating-price">₺ {item.price}</p>
+      <p className="rating-price">₺ {String(item.price).replace(".", ",")}</p>
       <Button
         className={isHover ? "active" : ""}
         variant="contained"

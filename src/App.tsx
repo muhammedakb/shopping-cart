@@ -8,8 +8,13 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import Badge from "@material-ui/core/Badge";
+import { ToastContainer, toast } from "react-toastify";
 // Styles
 import { Wrapper, StyledButton } from "./App.styles";
+import "react-toastify/dist/ReactToastify.css";
+// Utils
+import { correctionItemName } from "./utils/string";
+
 // Types
 export type CartItemType = {
   id: number;
@@ -53,6 +58,11 @@ const App = () => {
         );
       }
 
+      toast.success(`${correctionItemName(clickedItem.title)} added to cart!`, {
+        autoClose: 2000,
+        position: "top-left",
+      });
+
       // First time the item is added
       return [...prev, { ...clickedItem, amount: 1 }];
     });
@@ -62,7 +72,13 @@ const App = () => {
     setCartItems((prev) =>
       prev.reduce((ack, item) => {
         if (item.id === id) {
-          if (item.amount === 1) return ack;
+          if (item.amount === 1) {
+            toast.warn(`${correctionItemName(item.title)} removed from cart!`, {
+              autoClose: 2000,
+              position: "top-left",
+            });
+            return ack;
+          }
           return [...ack, { ...item, amount: item.amount - 1 }];
         } else {
           return [...ack, item];
@@ -100,6 +116,7 @@ const App = () => {
           </Grid>
         ))}
       </Grid>
+      <ToastContainer theme="dark" />
     </Wrapper>
   );
 };
