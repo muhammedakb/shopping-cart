@@ -19,7 +19,7 @@ const CartItem: FC<Props> = ({ item, addToCart, removeFromCart }) => {
   return (
     <Wrapper>
       <div>
-        <h3>{item.title}</h3>
+        <h4>{item.title}</h4>
         <div className="information">
           <p>Price: ₺{item.price.toFixed(2).replace(".", ",")}</p>
           <p>

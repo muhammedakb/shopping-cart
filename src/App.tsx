@@ -8,7 +8,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import Badge from "@material-ui/core/Badge";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Flip } from "react-toastify";
 // Styles
 import { Wrapper, StyledButton } from "./App.styles";
 import "react-toastify/dist/ReactToastify.css";
@@ -61,6 +61,7 @@ const App = () => {
       toast.success(`${correctionItemName(clickedItem.title)} added to cart!`, {
         autoClose: 2000,
         position: "top-left",
+        transition: Flip,
       });
 
       // First time the item is added
@@ -73,9 +74,10 @@ const App = () => {
       prev.reduce((ack, item) => {
         if (item.id === id) {
           if (item.amount === 1) {
-            toast.warn(`${correctionItemName(item.title)} removed from cart!`, {
+            toast.info(`${correctionItemName(item.title)} removed from cart!`, {
               autoClose: 2000,
               position: "top-left",
+              transition: Flip,
             });
             return ack;
           }
@@ -116,7 +118,7 @@ const App = () => {
           </Grid>
         ))}
       </Grid>
-      <ToastContainer theme="dark" />
+      <ToastContainer />
     </Wrapper>
   );
 };
