@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   font-family: Arial, Helvetica, sans-serif;
   border-bottom: 1px solid #e2e2e2;
   padding-bottom: 20px;
-  &:nth-child(2) {
+  &:nth-child(3) {
     border-top: 1px solid #e2e2e2;
   }
 

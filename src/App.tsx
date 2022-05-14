@@ -89,6 +89,15 @@ const App = () => {
     );
   };
 
+  const removeAllItemsFromCart = () => {
+    setCartItems([]);
+    toast.info("All items removed from cart!", {
+      autoClose: 2000,
+      position: "top-left",
+      transition: Flip,
+    });
+  };
+
   if (isLoading) return <LinearProgress />;
 
   if (error) return <div>Something went wrong...</div>;
@@ -100,6 +109,7 @@ const App = () => {
           cartItems={cartItems}
           addToCart={handleAddToCart}
           removeFromCart={handleRemoveFromCart}
+          removeAllFromCart={removeAllItemsFromCart}
         />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>

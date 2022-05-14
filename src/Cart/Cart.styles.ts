@@ -9,4 +9,10 @@ export const Wrapper = styled.aside`
     text-align: center;
     text-transform: uppercase;
   }
+
+  .cart-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 `;
