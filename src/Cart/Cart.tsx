@@ -25,6 +25,10 @@ const Cart: FC<Props> = ({
   const calculateTotal = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => item.amount * item.price + ack, 0);
 
+  const totalItems = cartItems.reduce(
+    (ack: number, item) => ack + item.amount,
+    0
+  );
   return (
     <Wrapper>
       <h2>Your Shopping Cart</h2>
@@ -34,8 +38,8 @@ const Cart: FC<Props> = ({
       {cartItems.length > 0 && (
         <div className="cart-info-row">
           <p>
-            Total <b>{cartItems.length}</b> item
-            {cartItems.length > 1 ? "s" : ""}
+            Total <b>{totalItems}</b> item
+            {totalItems > 1 ? "s" : ""}
           </p>
 
           <PopupState variant="popover">
