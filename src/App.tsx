@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 // Components
 import Item from "./Item/Item";
 import Cart from "./Cart/Cart";
+import Filter from "./Filter/Filter";
 import Drawer from "@material-ui/core/Drawer";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
@@ -30,12 +31,21 @@ export type CartItemType = {
   };
 };
 
-const getProducts = async (): Promise<CartItemType[]> =>
-  await (await fetch("https://fakestoreapi.com/products")).json();
-
 const App = () => {
   const [cartOpen, setCartOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
+  // TODO: setSelectedFilter from <Filter /> component
+
+  const getProducts = async (): Promise<CartItemType[]> =>
+    await (await fetch("https://fakestoreapi.com/products")).json();
+
+  const filterProducts = async (): Promise<CartItemType[]> =>
+    await (
+      await fetch(
+        `https://fakestoreapi.com/products/category/${selectedFilter}`
+      )
+    ).json();
 
   const { data, isLoading, error } = useQuery<CartItemType[]>(
     "products",
@@ -98,12 +108,18 @@ const App = () => {
     });
   };
 
+  const filterCategory = useMemo(
+    (): string[] => [...new Set(data?.map((item) => item.category))],
+    [data]
+  );
+
   if (isLoading) return <LinearProgress />;
 
   if (error) return <div>Something went wrong...</div>;
 
   return (
     <Wrapper>
+      <Filter filter={filterCategory} />
       <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
         <Cart
           cartItems={cartItems}
@@ -128,7 +144,7 @@ const App = () => {
           </Grid>
         ))}
       </Grid>
-      <ToastContainer />
+      <ToastContainer theme="dark" />
     </Wrapper>
   );
 };
