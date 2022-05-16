@@ -6,7 +6,7 @@ import StarHalfOutlinedIcon from "@material-ui/icons/StarHalfOutlined";
 import StarOutlineOutlinedIcon from "@material-ui/icons/StarOutlineOutlined";
 import StarOutlined from "@material-ui/icons/StarOutlined";
 // Types
-import { CartItemType } from "../App";
+import { CartItemType } from "../../App";
 // Styles
 import { Wrapper } from "./Item.styles";
 

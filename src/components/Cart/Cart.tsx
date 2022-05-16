@@ -7,10 +7,11 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 // Styles
 import { Wrapper } from "./Cart.styles";
 // Types
-import { CartItemType } from "../App";
+import { CartItemType } from "../../App";
 
 type Props = {
   cartItems: CartItemType[];
+  totalItems: number;
   addToCart: (clickedItem: CartItemType) => void;
   removeFromCart: (id: number) => void;
   removeAllFromCart: () => void;
@@ -21,14 +22,11 @@ const Cart: FC<Props> = ({
   addToCart,
   removeFromCart,
   removeAllFromCart,
+  totalItems,
 }) => {
   const calculateTotal = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => item.amount * item.price + ack, 0);
 
-  const totalItems = cartItems.reduce(
-    (ack: number, item) => ack + item.amount,
-    0
-  );
   return (
     <Wrapper>
       <h2>Your Shopping Cart</h2>

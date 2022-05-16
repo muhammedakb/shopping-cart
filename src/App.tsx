@@ -1,20 +1,20 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "react-query";
+import { useState } from "react";
 // Components
-import Item from "./Item/Item";
-import Cart from "./Cart/Cart";
-import Filter from "./Filter/Filter";
+import Item from "./components/Item/Item";
+import Cart from "./components/Cart/Cart";
+import Filter from "./components/Filter/Filter";
 import Drawer from "@material-ui/core/Drawer";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import Badge from "@material-ui/core/Badge";
 import { ToastContainer, toast, Flip } from "react-toastify";
 // Styles
-import { Wrapper, StyledButton } from "./App.styles";
+import { Wrapper, StyledButton, Loading } from "./App.styles";
 import "react-toastify/dist/ReactToastify.css";
 // Utils
 import { correctionItemName } from "./utils/string";
+// Hooks
+import useGetItems from "./hooks/useGetItems";
 
 // Types
 export type CartItemType = {
@@ -35,22 +35,7 @@ const App = () => {
   const [cartOpen, setCartOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
-  // TODO: setSelectedFilter from <Filter /> component
-
-  const getProducts = async (): Promise<CartItemType[]> =>
-    await (await fetch("https://fakestoreapi.com/products")).json();
-
-  const filterProducts = async (): Promise<CartItemType[]> =>
-    await (
-      await fetch(
-        `https://fakestoreapi.com/products/category/${selectedFilter}`
-      )
-    ).json();
-
-  const { data, isLoading, error } = useQuery<CartItemType[]>(
-    "products",
-    getProducts
-  );
+  const { data, isLoading, error } = useGetItems(selectedFilter ?? "");
 
   const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
@@ -69,8 +54,8 @@ const App = () => {
       }
 
       toast.success(`${correctionItemName(clickedItem.title)} added to cart!`, {
-        autoClose: 2000,
-        position: "top-left",
+        autoClose: 1500,
+        position: "top-center",
         transition: Flip,
       });
 
@@ -85,8 +70,8 @@ const App = () => {
         if (item.id === id) {
           if (item.amount === 1) {
             toast.info(`${correctionItemName(item.title)} removed from cart!`, {
-              autoClose: 2000,
-              position: "top-left",
+              autoClose: 1500,
+              position: "top-center",
               transition: Flip,
             });
             return ack;
@@ -102,41 +87,41 @@ const App = () => {
   const removeAllItemsFromCart = () => {
     setCartItems([]);
     toast.info("All items removed from cart!", {
-      autoClose: 2000,
-      position: "top-left",
+      autoClose: 1500,
+      position: "top-center",
       transition: Flip,
     });
   };
-
-  const filterCategory = useMemo(
-    (): string[] => [...new Set(data?.map((item) => item.category))],
-    [data]
-  );
-
-  if (isLoading) return <LinearProgress />;
 
   if (error) return <div>Something went wrong...</div>;
 
   return (
     <Wrapper>
-      <Filter filter={filterCategory} />
-      <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-        <Cart
-          cartItems={cartItems}
-          addToCart={handleAddToCart}
-          removeFromCart={handleRemoveFromCart}
-          removeAllFromCart={removeAllItemsFromCart}
-        />
-      </Drawer>
-      <StyledButton onClick={() => setCartOpen(true)}>
-        <Badge
-          badgeContent={getTotalItems(cartItems)}
-          color="error"
-          overlap="rectangular"
+      <Filter filter={selectedFilter} setFilter={setSelectedFilter}>
+        <Drawer
+          anchor="right"
+          open={cartOpen}
+          onClose={() => setCartOpen(false)}
         >
-          <AddShoppingCartIcon />
-        </Badge>
-      </StyledButton>
+          <Cart
+            cartItems={cartItems}
+            addToCart={handleAddToCart}
+            removeFromCart={handleRemoveFromCart}
+            removeAllFromCart={removeAllItemsFromCart}
+            totalItems={getTotalItems(cartItems)}
+          />
+        </Drawer>
+        <StyledButton onClick={() => setCartOpen(true)}>
+          <Badge
+            badgeContent={getTotalItems(cartItems)}
+            color="error"
+            overlap="rectangular"
+          >
+            <AddShoppingCartIcon />
+          </Badge>
+        </StyledButton>
+      </Filter>
+      {isLoading && <Loading />}
       <Grid container spacing={4}>
         {data?.map((item: CartItemType) => (
           <Grid item key={item.id} xs={12} sm={6} md={3} xl={2}>
