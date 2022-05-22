@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Components
 import Item from "./components/Item/Item";
 import Cart from "./components/Cart/Cart";
@@ -9,7 +9,7 @@ import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import Badge from "@material-ui/core/Badge";
 import { ToastContainer, toast, Flip } from "react-toastify";
 // Styles
-import { Wrapper, StyledButton, Loading } from "./App.styles";
+import { Wrapper, StyledButton, Loading, GridContainer } from "./App.styles";
 import "react-toastify/dist/ReactToastify.css";
 // Utils
 import { correctionItemName } from "./utils/string";
@@ -31,11 +31,29 @@ export type CartItemType = {
   };
 };
 
+export type SortType = "Price low to high" | "Price high to low" | undefined;
+
 const App = () => {
+  const [state, setState] = useState<any>([]);
   const [cartOpen, setCartOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
-  const { data, isLoading, error } = useGetItems(selectedFilter ?? "");
+  const [selectedSort, setSelectedSort] = useState<SortType>(undefined);
+  const { status, data, isLoading, error } = useGetItems(selectedFilter ?? "");
+
+  useEffect(() => {
+    if (status === "success") {
+      setState(data);
+    }
+  }, [status, data]);
+
+  useEffect(() => {
+    if (selectedSort) {
+      sortItemsByPrice();
+    } else if (selectedSort === undefined || selectedSort === "") {
+      setState(data);
+    }
+  }, [selectedSort, selectedFilter]);
 
   const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
@@ -55,7 +73,7 @@ const App = () => {
 
       toast.success(`${correctionItemName(clickedItem.title)} added to cart!`, {
         autoClose: 1500,
-        position: "top-center",
+        position: "bottom-right",
         transition: Flip,
       });
 
@@ -71,7 +89,7 @@ const App = () => {
           if (item.amount === 1) {
             toast.info(`${correctionItemName(item.title)} removed from cart!`, {
               autoClose: 1500,
-              position: "top-center",
+              position: "bottom-right",
               transition: Flip,
             });
             return ack;
@@ -93,11 +111,28 @@ const App = () => {
     });
   };
 
+  const sortItemsByPrice = () => {
+    if (selectedSort === "Price low to high") {
+      setState((prev: any) => {
+        return [...prev].sort((a, b) => a.price - b.price);
+      });
+    } else if (selectedSort === "Price high to low") {
+      setState((prev: any) => {
+        return [...prev].sort((a, b) => b.price - a.price);
+      });
+    }
+  };
+
   if (error) return <div>Something went wrong...</div>;
 
   return (
     <Wrapper>
-      <Filter filter={selectedFilter} setFilter={setSelectedFilter}>
+      <Filter
+        filter={selectedFilter}
+        setFilter={setSelectedFilter}
+        sort={selectedSort}
+        setSort={setSelectedSort}
+      >
         <Drawer
           anchor="right"
           open={cartOpen}
@@ -122,14 +157,17 @@ const App = () => {
         </StyledButton>
       </Filter>
       {isLoading && <Loading />}
-      <Grid container spacing={4}>
-        {data?.map((item: CartItemType) => (
+      <GridContainer container spacing={4}>
+        {state?.map((item: CartItemType) => (
           <Grid item key={item.id} xs={12} sm={6} md={3} xl={2}>
             <Item item={item} handleAddToCart={handleAddToCart} />
           </Grid>
         ))}
-      </Grid>
-      <ToastContainer theme="dark" />
+      </GridContainer>
+      <ToastContainer
+        theme="dark"
+        style={{ width: "240px", fontSize: "12px" }}
+      />
     </Wrapper>
   );
 };

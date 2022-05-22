@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  position: relative;
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -9,9 +8,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Filters = styled.div`
-  position: absolute;
-  left: 220px;
-  padding: 5px;
+  padding: 3px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,10 +22,18 @@ export const Filters = styled.div`
   }
 
   p {
-    font-size: 12px;
+    font-size: 11px;
   }
   svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+export const FiltersWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  @media screen and (max-width: 425px) {
+    flex-direction: column;
   }
 `;

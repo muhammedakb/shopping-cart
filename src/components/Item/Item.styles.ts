@@ -16,6 +16,13 @@ export const Wrapper = styled.div`
     transform: scale(1.03);
   }
 
+  @media screen and (max-width: 768px) {
+    &:hover {
+      box-shadow: none;
+      transform: scale(1);
+    }
+  }
+
   figure {
     width: 200px;
     height: 280px;
@@ -77,6 +84,9 @@ export const Wrapper = styled.div`
     background-color: #fb923c;
     color: #fff;
     visibility: hidden;
+    @media screen and (max-width: 768px) {
+      visibility: visible;
+    }
     &.active {
       visibility: visible;
     }
