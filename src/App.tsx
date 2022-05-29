@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // Components
 import Item from "./components/Item/Item";
 import Cart from "./components/Cart/Cart";
@@ -111,7 +111,7 @@ const App = () => {
     });
   };
 
-  const sortItemsByPrice = () => {
+  const sortItemsByPrice = useCallback(() => {
     if (selectedSort === "Price low to high") {
       setState((prev: any) => {
         return [...prev].sort((a, b) => a.price - b.price);
@@ -121,7 +121,7 @@ const App = () => {
         return [...prev].sort((a, b) => b.price - a.price);
       });
     }
-  };
+  }, [selectedSort, setState, state]);
 
   if (error) return <div>Something went wrong...</div>;
 

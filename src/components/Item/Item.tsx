@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, memo, useState } from "react";
 // Components
 import Button from "@material-ui/core/Button";
 // Icons
@@ -57,4 +57,4 @@ const Item: FC<Props> = ({ item, handleAddToCart }) => {
   );
 };
 
-export default Item;
+export default memo(Item);
