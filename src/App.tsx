@@ -31,14 +31,17 @@ export type CartItemType = {
   };
 };
 
-export type SortType = "Price low to high" | "Price high to low" | undefined;
+export enum SortOptions {
+  LOW_TO_HIGH = "Price low to high",
+  HIGH_TO_LOW = "Price high to low",
+}
 
 const App = () => {
   const [state, setState] = useState<any>([]);
   const [cartOpen, setCartOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("");
-  const [selectedSort, setSelectedSort] = useState<SortType>(undefined);
+  const [selectedSort, setSelectedSort] = useState<SortOptions>();
   const { status, data, isLoading, error } = useGetItems(selectedFilter ?? "");
 
   useEffect(() => {
@@ -46,14 +49,6 @@ const App = () => {
       setState(data);
     }
   }, [status, data]);
-
-  useEffect(() => {
-    if (selectedSort) {
-      sortItemsByPrice();
-    } else if (selectedSort === undefined || selectedSort === "") {
-      setState(data);
-    }
-  }, [selectedSort, selectedFilter]);
 
   const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
@@ -122,6 +117,14 @@ const App = () => {
       });
     }
   }, [selectedSort, setState, state]);
+
+  useEffect(() => {
+    if (selectedSort) {
+      sortItemsByPrice();
+    } else if (selectedSort === undefined || selectedSort === "") {
+      setState(data);
+    }
+  }, [selectedSort, data]);
 
   if (error) return <div>Something went wrong...</div>;
 

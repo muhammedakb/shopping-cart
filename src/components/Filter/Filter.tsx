@@ -13,17 +13,15 @@ import HighlightOff from "@material-ui/icons/HighlightOff";
 // Styles
 import { Wrapper, Filters, FiltersWrapper } from "./Filter.styles";
 // Types
-import { SortType } from "../../App";
+import { SortOptions } from "../../App";
 
 type Props = {
   children?: React.ReactNode;
   filter: string;
   setFilter: React.Dispatch<React.SetStateAction<string>>;
-  sort: SortType;
-  setSort: React.Dispatch<React.SetStateAction<SortType>>;
+  sort: SortOptions | undefined;
+  setSort: React.Dispatch<React.SetStateAction<SortOptions | undefined>>;
 };
-
-const filterOptions = ["Price low to high", "Price high to low"];
 
 const Filter: FC<Props> = ({ children, filter, setFilter, sort, setSort }) => {
   const getCategories = async (): Promise<string[]> =>
@@ -39,7 +37,7 @@ const Filter: FC<Props> = ({ children, filter, setFilter, sort, setSort }) => {
   };
 
   const handleSortChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setSort(event.target.value as SortType);
+    setSort(event.target.value as SortOptions);
   };
 
   if (isLoading) return <LinearProgress />;
@@ -75,7 +73,7 @@ const Filter: FC<Props> = ({ children, filter, setFilter, sort, setSort }) => {
               onChange={handleSortChange}
             >
               <MenuItem value="">Sort items</MenuItem>
-              {filterOptions?.map((item, index) => (
+              {Object.values(SortOptions).map((item, index) => (
                 <MenuItem key={index} value={item}>
                   {item}
                 </MenuItem>
